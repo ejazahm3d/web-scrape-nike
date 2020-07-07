@@ -5,7 +5,7 @@ const { v4 } = require("uuid");
 const BASE_URL = "https://www.nike.com/w/mens-shoes-nik1zy7ok";
 
 (async () => {
-  const browser = await puppeteer.launch({ devtools: true });
+  const browser = await puppeteer.launch({ headless: false });
   const page = await browser.newPage();
   await page.goto(BASE_URL, {
     waitUntil: "domcontentloaded",
