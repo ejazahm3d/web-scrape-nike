@@ -1,10 +1,13 @@
 const puppeteer = require("puppeteer");
 const fs = require("fs");
+const { v4 } = require("uuid");
+
+const BASE_URL = "https://www.nike.com/w/mens-shoes-nik1zy7ok";
 
 (async () => {
-  const browser = await puppeteer.launch({ devtools: true, headless: false });
+  const browser = await puppeteer.launch({ devtools: true });
   const page = await browser.newPage();
-  await page.goto("https://www.nike.com/w/mens-shoes-nik1zy7ok", {
+  await page.goto(BASE_URL, {
     waitUntil: "domcontentloaded",
   });
 
@@ -15,7 +18,7 @@ const fs = require("fs");
     return productNodeLinks;
   });
 
-  const finalProducts = [];
+  let finalProducts = [];
   for (productPage of productLinks) {
     await page.goto(productPage, { waitUntil: "domcontentloaded" });
     const currentProduct = await page.evaluate(async () => {
@@ -54,7 +57,10 @@ const fs = require("fs");
     finalProducts.push(currentProduct);
     await page.goBack({ waitUntil: "domcontentloaded" });
   }
-  console.log(finalProducts);
+  finalProducts = await finalProducts.map((product) => ({
+    id: v4(),
+    ...product,
+  }));
 
   await browser.close();
   await fs.writeFileSync(
