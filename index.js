@@ -1,5 +1,7 @@
 const puppeteer = require("puppeteer");
-const fs = require("fs/promises")(async () => {
+const fs = require("fs");
+
+(async () => {
   const browser = await puppeteer.launch({ devtools: true, headless: false });
   const page = await browser.newPage();
   await page.goto("https://www.nike.com/w/mens-shoes-nik1zy7ok", {
@@ -55,4 +57,11 @@ const fs = require("fs/promises")(async () => {
   console.log(finalProducts);
 
   await browser.close();
+  await fs.writeFileSync(
+    "products.json",
+    JSON.stringify(finalProducts),
+    (err) => {
+      console.log("Hello > asdad");
+    }
+  );
 })();
